@@ -31,14 +31,15 @@ def get_lucky_num():
 
     data = get_form_data()
     
-    data_json = jsonify(data)
+    # data_json = jsonify(data)
     
     # errors = validate_data(data_json)
+    errors = validate_data(data)
 
-    # if errors:
+    if errors['errors']:
         # return jsonify({errors})
+        return errors
 
-    # res = get_trivia(data_json['year'])
     res = get_trivia(data['year'])
 
     return res
@@ -48,8 +49,15 @@ def request_year_trivia(year):
     """Return year and fact from Numbers API for given year."""
 
     res = requests.get(f'{API_BASE_URL}/{year}/year?json')
+
+    # data = {params: {"number": year, "type": "year"}}
+
+    # where does ? json go?
+    # headers = {["Content-Type"]: "application/json"}
+    # res = requests.get(f'{API_BASE_URL}/{year}/year', headers=headers)
     
     return res
+
 
 def request_num_trivia():
     """Return number and trivia from Numbers API for random number."""
@@ -95,20 +103,20 @@ def get_form_data():
 def validate_data(data):
     """Check data from client for errors."""
     valid_colors = ["red", "green", "orange", "blue"]
-    errors = {}
+    errors = {'errors': {}}
 
     if not data["name"]:
         name_err = ["This field is required."]
-        errors['name_err'] = name_err
-    if (not data["year"]) or year < 1900 or year >2000:
-        year_err = ["Invalid value, must be between 1900 and 2000 inclusive is required."]
-        errors['year_err'] = year_err
+        errors['errors']['name'] = name_err
+    if (not data["year"]) or (int(data["year"]) < 1900) or (int(data["year"]) > 2000):
+        year_err = ["Invalid value, must be between 1900 and 2000."]
+        errors['errors']['year'] = year_err
     if not data["email"]:
         email_err = ["This field is required."]
-        errors['email_err'] = email_err
+        errors['errors']['email'] = email_err
     if (not data["color"]) or (data["color"] not in valid_colors):
         color_err = ["Invalid value, must be one of: red, green, orange, blue."]
-        errors['color_err'] = color_err
+        errors['errors']['color'] = color_err
 
     return errors
 

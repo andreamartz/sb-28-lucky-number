@@ -11,10 +11,6 @@ let colorErr = document.querySelector("#color-err");
 
 /** processForm: get data from form and make AJAX call to our API. */
 
-// GIVEN:
-// function processForm(evt) {
-// }
-
 async function processForm(evt) {
   evt.preventDefault();
   // get data from form
@@ -42,41 +38,44 @@ form.addEventListener("submit", async function(evt) {
   handleResponse(res);
 })
 
+/** handleResponse: deal with response from our lucky-num API. */
+function handleResponse(res) {
+  // empty all divs of prior response data
+  nameErr.innerText = '';
+  yearErr.innerText = '';
+  emailErr.innerText = '';
+  colorErr.innerText = '';
+  results.innerHTML = '';
+
+  if (res["data"]["errors"]) {
+    if (res["data"]["errors"]["name"]) {
+      nameErr.innerText = res["data"]["errors"]["name"][0];
+    }
+    if (res["data"]["errors"]["year"]) {
+      yearErr.innerText = res["data"]["errors"]["year"][0];
+    }
+    if (res["data"]["errors"]["email"]) {
+      emailErr.innerText = res["data"]["errors"]["email"][0];
+    }
+    if (res["data"]["errors"]["color"]) {
+      colorErr.innerText = res["data"]["errors"]["color"][0];
+    }
+  } else {
+    results.innerHTML = `<p>Your lucky number is ${res["data"]["num"]["num"]} (${res["data"]["num"]["fact"]}).</p><p>Your birth year (${res["data"]["year"]["year"]}) fact is ${res["data"]["year"]["fact"]}</p>`;
+    form.reset();
+  }
+}
+
+
+// GIVEN:
+// function processForm(evt) {
+// }
 
 // GIVEN:
 // function handleResponse(resp) {
 // }
 
 
-/** handleResponse: deal with response from our lucky-num API. */
-function handleResponse(res) {
-  if (res["errors"]) {
-    nameErr.innerText = res["errors"]["name"][0] || '';
-    console.log("I looked at 'name'!");
-    yearErr.innerText = res["errors"]["year"][0] || '';
-    emailErr.innerText = res["errors"]["email"][0] || '';
-    colorErr.innerText = res["errors"]["color"][0] || '';
-  }
-    // if (res["errors"]["name"]) {
-  //   nameErr.innerText = res["errors"]["name"][0];
-  // }
-
-  // if (res["errors"]["year"]) {
-  //   yearErr.innerText = res["errors"]["year"][0];
-  // }
-
-  // if (res["errors"]["email"]) {
-  //   emailErr.innerText = res["errors"]["email"][0];
-  // }
-
-  // if (res["errors"]["color"]) {
-  //   colorErr.innerText = res["errors"]["color"][0];
-  // }
-  console.log("LINE 75 res: ", res);
-  if (!res["errors"]) {
-    results.innerHTML = `<p>Your lucky number is ${res["data"]["num"]["num"]} (${res["data"]["num"]["fact"]}).</p><p>Your birth year (${res["data"]["year"]["year"]}) fact is ${res["data"]["year"]["fact"]}</p>`
-  }
-}
 // how to get the result variable out?
 // GIVEN:
 // $("#lucky-form").on("submit", processForm);
