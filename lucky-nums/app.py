@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template
 import requests
 from flask_debugtoolbar import DebugToolbarExtension
 
