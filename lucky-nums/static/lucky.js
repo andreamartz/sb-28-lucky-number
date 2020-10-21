@@ -33,32 +33,29 @@ async function processForm(evt) {
   return res;
 }
 
-form.addEventListener("submit", async function(evt) {
-  res = await processForm(evt); // response from Flask backend API
-  handleResponse(res);
-})
-
 /** handleResponse: deal with response from our lucky-num API. */
 function handleResponse(res) {
-  // empty all divs of prior response data
+  // empty page of prior responses and error messages
   nameErr.innerText = '';
   yearErr.innerText = '';
   emailErr.innerText = '';
   colorErr.innerText = '';
   results.innerHTML = '';
 
-  if (res["data"]["errors"]) {
-    if (res["data"]["errors"]["name"]) {
-      nameErr.innerText = res["data"]["errors"]["name"][0];
+  let res_errors = res["data"]["errors"]
+
+  if (res_errors) {
+    if (res_errors["name"]) {
+      nameErr.innerText = res_errors["name"][0];
     }
-    if (res["data"]["errors"]["year"]) {
-      yearErr.innerText = res["data"]["errors"]["year"][0];
+    if (res_errors["year"]) {
+      yearErr.innerText = res_errors["year"][0];
     }
-    if (res["data"]["errors"]["email"]) {
-      emailErr.innerText = res["data"]["errors"]["email"][0];
+    if (res_errors["email"]) {
+      emailErr.innerText = res_errors["email"][0];
     }
-    if (res["data"]["errors"]["color"]) {
-      colorErr.innerText = res["data"]["errors"]["color"][0];
+    if (res_errors["color"]) {
+      colorErr.innerText = res_errors["color"][0];
     }
   } else {
     results.innerHTML = `<p>Your lucky number is ${res["data"]["num"]["num"]} (${res["data"]["num"]["fact"]}).</p><p>Your birth year (${res["data"]["year"]["year"]}) fact is ${res["data"]["year"]["fact"]}</p>`;
@@ -66,16 +63,7 @@ function handleResponse(res) {
   }
 }
 
-
-// GIVEN:
-// function processForm(evt) {
-// }
-
-// GIVEN:
-// function handleResponse(resp) {
-// }
-
-
-// how to get the result variable out?
-// GIVEN:
-// $("#lucky-form").on("submit", processForm);
+form.addEventListener("submit", async function(evt) {
+  res = await processForm(evt); // response from Flask backend API
+  handleResponse(res);
+})
